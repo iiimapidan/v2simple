@@ -9,7 +9,7 @@
             "type": "go",
             "request": "launch",
             "mode": "auto",
-            "program": "${fileDirname}",
+            "program": "main.go",
             "args": ["-f", "client.example.json"]
         },
         {
@@ -17,7 +17,7 @@
             "type": "go",
             "request": "launch",
             "mode": "auto",
-            "program": "${fileDirname}",
+            "program": "main.go",
             "args": ["-f", "server.example.json"]
         }
     ]

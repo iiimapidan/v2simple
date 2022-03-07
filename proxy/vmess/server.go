@@ -278,14 +278,17 @@ func (s *Server) Refresh() {
 				tainted: false,
 			}
 			i++
-			log.Printf("User:%v SecIndex:%v Size:%v", userIndex, i, len(s.userHashes))
+			log.Printf(
+				"User:%v SecIndex:%v Size:%v Time:%v",
+				userIndex, i, len(s.userHashes), ts)
 
 		}
 	}
 	if genBeginSec > s.baseTime {
+		// 每30秒执行一次，删除前30秒前的无效数据
 		for k, v := range s.userHashes {
 			if v.timeInc+s.baseTime < genBeginSec {
-				log.Printf("")
+				log.Printf("Del Time:%v", v.timeInc+s.baseTime)
 				delete(s.userHashes, k)
 			}
 		}

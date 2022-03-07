@@ -6,8 +6,9 @@ import (
 	"encoding/binary"
 	"encoding/hex"
 	"errors"
-	"github.com/jarvisgally/v2simple/common"
 	"strings"
+
+	"github.com/jarvisgally/v2simple/common"
 )
 
 // Vmess user
@@ -18,6 +19,7 @@ type User struct {
 
 func NewUser(uuid [16]byte) *User {
 	u := &User{UUID: uuid}
+	// 生成一个key方便后面加密使用
 	copy(u.CmdKey[:], GetKey(uuid))
 	return u
 }

@@ -3,11 +3,11 @@ package socks5
 import (
 	"errors"
 	"fmt"
-	"github.com/jarvisgally/v2simple/common"
 	"io"
 	"net"
 	"net/url"
-	"time"
+
+	"github.com/jarvisgally/v2simple/common"
 
 	"github.com/jarvisgally/v2simple/proxy"
 )
@@ -43,10 +43,10 @@ func (s *Server) Addr() string { return s.addr }
 
 func (s *Server) Handshake(underlay net.Conn) (io.ReadWriter, *proxy.TargetAddr, error) {
 	// Set handshake timeout 4 seconds
-	if err := underlay.SetReadDeadline(time.Now().Add(time.Second * 4)); err != nil {
-		return nil, nil, err
-	}
-	defer underlay.SetReadDeadline(time.Time{})
+	// if err := underlay.SetReadDeadline(time.Now().Add(time.Second * 4)); err != nil {
+	// 	return nil, nil, err
+	// }
+	// defer underlay.SetReadDeadline(time.Time{})
 
 	// https://www.ietf.org/rfc/rfc1928.txt
 	buf := common.GetBuffer(512)

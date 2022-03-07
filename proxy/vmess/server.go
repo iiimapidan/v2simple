@@ -262,7 +262,8 @@ func (s *Server) Refresh() {
 	genBeginSec := nowSec - cacheDurationSec
 	genEndSec := nowSec + cacheDurationSec
 	var hashValue [16]byte
-	for _, user := range s.users {
+	i := 0
+	for userIndex, user := range s.users {
 		hasher := hmac.New(md5.New, user.UUID[:])
 		for ts := genBeginSec; ts <= genEndSec; ts++ {
 			var b [8]byte
@@ -276,11 +277,15 @@ func (s *Server) Refresh() {
 				timeInc: ts - s.baseTime,
 				tainted: false,
 			}
+			i++
+			log.Printf("User:%v SecIndex:%v Size:%v", userIndex, i, len(s.userHashes))
+
 		}
 	}
 	if genBeginSec > s.baseTime {
 		for k, v := range s.userHashes {
 			if v.timeInc+s.baseTime < genBeginSec {
+				log.Printf("")
 				delete(s.userHashes, k)
 			}
 		}

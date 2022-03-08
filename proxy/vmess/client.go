@@ -152,7 +152,8 @@ func (c *ClientConn) Auth() error {
 	h := hmac.New(md5.New, c.user.UUID[:])
 	h.Write(ts)
 
-	_, err := c.Conn.Write(h.Sum(nil))
+	sum := h.Sum(nil)
+	_, err := c.Conn.Write(sum)
 	return err
 }
 

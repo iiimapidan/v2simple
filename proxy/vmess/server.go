@@ -263,7 +263,7 @@ func (s *Server) Refresh() {
 	genEndSec := nowSec + cacheDurationSec
 	var hashValue [16]byte
 	i := 0
-	for userIndex, user := range s.users {
+	for _, user := range s.users {
 		hasher := hmac.New(md5.New, user.UUID[:])
 		for ts := genBeginSec; ts <= genEndSec; ts++ {
 			var b [8]byte
@@ -278,9 +278,9 @@ func (s *Server) Refresh() {
 				tainted: false,
 			}
 			i++
-			log.Printf(
-				"User:%v SecIndex:%v Size:%v Time:%v",
-				userIndex, i, len(s.userHashes), ts)
+			// log.Printf(
+			// 	"User:%v SecIndex:%v Size:%v Time:%v",
+			// 	userIndex, i, len(s.userHashes), ts)
 
 		}
 	}
@@ -288,7 +288,7 @@ func (s *Server) Refresh() {
 		// 每30秒执行一次，删除前30秒前的无效数据
 		for k, v := range s.userHashes {
 			if v.timeInc+s.baseTime < genBeginSec {
-				log.Printf("Del Time:%v", v.timeInc+s.baseTime)
+				//log.Printf("Del Time:%v", v.timeInc+s.baseTime)
 				delete(s.userHashes, k)
 			}
 		}

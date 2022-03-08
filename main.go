@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"github.com/jarvisgally/v2simple/common"
-	"github.com/jarvisgally/v2simple/proxy/direct"
 	"io"
 	"io/ioutil"
 	"log"
@@ -16,6 +14,9 @@ import (
 	"strings"
 	"syscall"
 	"time"
+
+	"github.com/jarvisgally/v2simple/common"
+	"github.com/jarvisgally/v2simple/proxy/direct"
 
 	_ "github.com/jarvisgally/v2simple/common"
 	"github.com/jarvisgally/v2simple/proxy"
@@ -56,6 +57,20 @@ type Config struct {
 	Local  string `json:"local"`
 	Route  string `json:"route"`
 	Remote string `json:"remote"`
+}
+
+type HttpContext struct {
+	conn io.ReadWriter
+}
+
+func (h *HttpContext) Write(p []byte) (n int, err error) {
+	log.Printf("request: %v", string(p))
+	return h.conn.Write(p)
+}
+
+func (h *HttpContext) Read(p []byte) (n int, err error) {
+	log.Printf("result: %v", string(p))
+	return h.conn.Read(p)
 }
 
 func loadConfig(configFileName string) (*Config, error) {
@@ -173,9 +188,13 @@ func main() {
 					return
 				}
 
+				httpContext := &HttpContext{
+					conn: wrc,
+				}
+
 				// 流量转发
-				go io.Copy(wrc, wlc)
-				io.Copy(wlc, wrc)
+				go io.Copy(httpContext, wlc)
+				io.Copy(wlc, httpContext)
 			}()
 		}
 	}()
